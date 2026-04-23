@@ -6,16 +6,26 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct ContentView: View {
+    @State private var user = Auth.auth().currentUser
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        Group {
+            if user != nil {
+                NavigationStack {
+                    HomeView()
+                }
+            } else {
+                LoginView()
+            }
         }
-        .padding()
+        .onAppear {
+            Auth.auth().addStateDidChangeListener { _, newUser in
+                user = newUser
+            }
+        }
     }
 }
 
