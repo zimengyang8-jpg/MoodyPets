@@ -21,6 +21,10 @@ struct ResultView: View {
     
     @Environment(\.dismiss) private var dismiss
     
+    var isUnstructured: Bool {
+        analysis.isStructured == false
+    }
+    
     var body: some View {
         ZStack {
             Color.accentColor
@@ -30,13 +34,18 @@ struct ResultView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     Group {
                         if let petImage {
-                            petImage
-                                .resizable()
-                                .scaledToFill()
-                                .frame(height: 260)
-                                .frame(maxWidth: .infinity)
-                                .clipped()
-                                .cornerRadius(20)
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(Color.themeblue.opacity(0.15))
+                                
+                                petImage
+                                    .resizable()
+                                    .scaledToFit()
+                                    .padding(4)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 260)
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
                         } else {
                             RoundedRectangle(cornerRadius: 20)
                                 .fill(Color.themeblue.opacity(0.15))
@@ -53,6 +62,7 @@ struct ResultView: View {
                             .font(.headline)
                             .foregroundStyle(.secondary)
                         
+                        
                         Text(analysis.mood.capitalized)
                             .font(.system(size: 34, weight: .bold))
                         
@@ -61,30 +71,46 @@ struct ResultView: View {
                             .foregroundStyle(.secondary)
                     }
                     
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Why this result?")
-                            .font(.headline)
+                    if isUnstructured {
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("AI Response")
+                                .font(.headline)
+
+                            Text(analysis.rawText ?? analysis.reason)
+                                .font(.body)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Color.orange.opacity(0.12))
+                        .cornerRadius(16)
+
+                    } else {
+
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("Why this result?")
+                                .font(.headline)
+                            
+                            Text(analysis.reason)
+                                .font(.body)
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Color.blue.opacity(0.08))
+                        .cornerRadius(16)
                         
-                        Text(analysis.reason)
-                            .font(.body)
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("Suggested Action")
+                                .font(.headline)
+                            
+                            Text(analysis.suggestion)
+                                .font(.body)
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Color.green.opacity(0.08))
+                        .cornerRadius(16)
                     }
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color.blue.opacity(0.08))
-                    .cornerRadius(16)
-                    
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Suggested Action")
-                            .font(.headline)
-                        
-                        Text(analysis.suggestion)
-                            .font(.body)
-                        
-                    }
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color.green.opacity(0.08))
-                    .cornerRadius(16)
                     
                     Text("Analyzed At: \(analysis.createdAt.formatted(date: .abbreviated, time: .shortened))")
                         .font(.footnote)

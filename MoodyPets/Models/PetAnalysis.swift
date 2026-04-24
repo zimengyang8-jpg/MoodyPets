@@ -19,5 +19,8 @@ struct PetAnalysis: Codable, Identifiable {
     var suggestion: String
     var notes: String?
     var createdAt: Date
+    
+    var rawText: String?
+    var isStructured: Bool?
 }
 

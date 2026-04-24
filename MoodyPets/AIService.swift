@@ -27,6 +27,8 @@ class AIService {
         let mood = data["mood"] as? String ?? "Unknown"
         let reason = data["reason"] as? String ?? "No reason"
         let suggestion = data["suggestion"] as? String ?? "No suggestion"
+        let rawText = data["rawText"] as? String
+        let isStructured = data["isStructured"] as? Bool ?? true
         
         return PetAnalysis(
             id: nil,
@@ -35,7 +37,9 @@ class AIService {
             mood: mood,
             reason: reason,
             suggestion: suggestion,
-            createdAt: Date()
+            createdAt: Date(),
+            rawText: rawText,
+            isStructured: isStructured
         )
     }
 }

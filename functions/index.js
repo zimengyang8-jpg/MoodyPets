@@ -42,17 +42,16 @@ exports.analyzePetPhoto = onCall(
                 text: `
 Analyze this pet image conservatively.
 
-Return ONLY valid JSON:
+If possible, return valid JSON with:
 {
   "mood": "...",
   "reason": "...",
   "suggestion": "..."
 }
 
-Rules:
-- Do not exaggerate
-- Keep answers short
-- No extra text outside JSON
+If the image is unclear or you cannot confidently use the JSON format, respond in 2-3 short sentences explaining what you can observe and what the owner could try next.
+
+Do not exaggerate. Keep the response safe and gentle.
                 `.trim(),
               },
               {
@@ -70,15 +69,36 @@ Rules:
 
       logger.info("AI raw output received");
 
-      // ✅ (Optional but recommended) parse JSON safely
       let parsed;
-      try {
-        parsed = JSON.parse(rawText);
-      } catch {
-        parsed = { raw: rawText }; // fallback if AI misbehaves
-      }
 
-      return parsed;
+      try {
+            const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+
+            if (!jsonMatch) {
+                throw new Error("No JSON found");
+            }
+
+            parsed = JSON.parse(jsonMatch[0]);
+
+            return {
+                mood: parsed.mood || "Unclear",
+                reason: parsed.reason || "The image does not provide enough clear visual cues.",
+                suggestion: parsed.suggestion || "Try uploading a clearer photo.",
+                rawText: rawText,
+                isStructured: true,
+            };
+
+        } catch (error) {
+            logger.info("AI returned unstructured text:", rawText);
+
+            return {
+                mood: "Unclear",
+                reason: rawText,
+                suggestion: "Try another photo if you want a more specific result.",
+                rawText: rawText,
+                isStructured: false,
+            };
+        }
 
     } catch (error) {
       logger.error("analyzePetPhoto failed", error);
