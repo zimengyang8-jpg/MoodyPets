@@ -21,50 +21,55 @@ struct HomeView: View {
     @State private var uploadedImageURL: String?
     
     var body: some View {
-        VStack {
-            Spacer()
-            if let selectedImage {
-                selectedImage
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 250)
-            } else {
-                Rectangle()
-                    .fill(.gray.opacity(0.2))
-                    .frame(height: 250)
-                    .overlay(Text("Upload an Image to Start!"))
-            }
+        ZStack {
+            Color.accentColor
+                .ignoresSafeArea()
             
-            PhotosPicker(selection: $selectedItem, matching: .images, preferredItemEncoding: .automatic) {
-                Label("Photo Library", systemImage: "photo.fill.on.rectangle.fill")
-            }
-            .padding(.vertical)
-            .bold()
-            .tint(.purple)
-            
-            Spacer()
-            Spacer()
-            
-            Button {
-                Task {
-                    await runAnalysis()
-                }
-            } label: {
-                if isAnalyzing {
-                    ProgressView()
-                        .frame(maxWidth: .infinity)
+            VStack {
+                Spacer()
+                if let selectedImage {
+                    selectedImage
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 250)
                 } else {
-                    Text("Analyze Mood")
-                        .bold()
-                        .frame(maxWidth: .infinity)
+                    Rectangle()
+                        .fill(.themeblue.opacity(0.2))
+                        .frame(height: 250)
+                        .overlay(Text("Upload an Image to Start!").font(.title3).foregroundStyle(.themeblue))
                 }
+                
+                PhotosPicker(selection: $selectedItem, matching: .images, preferredItemEncoding: .automatic) {
+                    Label("Photo Library", systemImage: "photo.fill.on.rectangle.fill")
+                }
+                .padding(.vertical)
+                .bold()
+                .tint(.themepink)
+                
+                Spacer()
+                Spacer()
+                
+                Button {
+                    Task {
+                        await runAnalysis()
+                    }
+                } label: {
+                    if isAnalyzing {
+                        ProgressView()
+                            .frame(maxWidth: .infinity)
+                    } else {
+                        Text("Analyze Mood")
+                            .bold()
+                            .frame(maxWidth: .infinity)
+                    }
+                }
+                .tint(.themepink)
+                .buttonStyle(.borderedProminent)
+                .disabled(selectedImageData == nil || isAnalyzing)
+                
             }
-            .tint(.purple)
-            .buttonStyle(.borderedProminent)
-            .disabled(selectedImageData == nil || isAnalyzing)
-            
+            .padding()
         }
-        .padding()
         .navigationTitle("MoodyPets")
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
@@ -75,6 +80,15 @@ struct HomeView: View {
                     } catch {
                         print("❌ Logout failed:", error)
                     }
+                }
+                .tint(.themeblue)
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                NavigationLink {
+                    HistoryView()
+                } label: {
+                    Image(systemName: "clock")
+                        .foregroundStyle(.themeblue)
                 }
             }
         }

@@ -20,63 +20,68 @@ struct LoginView: View {
     @FocusState private var focusField: Field?
     
     var body: some View {
-        VStack {
-            Image("logo")
-                .resizable()
-                .scaledToFit()
-                .padding()
-            
-            Group {
-                TextField("E-mail", text: $email)
-                    .keyboardType(.emailAddress)
-                    .autocorrectionDisabled()
-                    .textInputAutocapitalization(.never)
-                    .submitLabel(.next)
-                    .focused($focusField, equals: .email) // this field is bound to the .email case
-                    .onSubmit {
-                        focusField = .password
-                    }
-                    .onChange(of: email) {
-                        enableButtons()
-                    }
+        ZStack {
+            Color.accentColor
+                .ignoresSafeArea()
+            VStack {
+                Image("logo")
+                    .resizable()
+                    .scaledToFit()
+                    .padding()
                 
-                SecureField("Password", text: $password)
-                    .textInputAutocapitalization(.never)
-                    .submitLabel(.done)
-                    .focused($focusField, equals: .password) // this field is bound to the .password case
-                    .onSubmit {
-                        focusField = nil // will dismiss the keyboard
-                    }
-                    .onChange(of: password) {
-                        enableButtons()
-                    }
-            }
-            .textFieldStyle(.roundedBorder)
-            .overlay {
-                RoundedRectangle(cornerRadius: 5)
-                    .stroke(.gray.opacity(0.5), lineWidth: 2)
-            }
-            .padding(.horizontal)
-            
-            HStack {
-                Button {
-                    register()
-                } label: {
-                    Text("Sign Up")
+                Group {
+                    TextField("E-mail", text: $email)
+                        .keyboardType(.emailAddress)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
+                        .submitLabel(.next)
+                        .focused($focusField, equals: .email) // this field is bound to the .email case
+                        .onSubmit {
+                            focusField = .password
+                        }
+                        .onChange(of: email) {
+                            enableButtons()
+                        }
+                    
+                    SecureField("Password", text: $password)
+                        .textInputAutocapitalization(.never)
+                        .submitLabel(.done)
+                        .focused($focusField, equals: .password) // this field is bound to the .password case
+                        .onSubmit {
+                            focusField = nil // will dismiss the keyboard
+                        }
+                        .onChange(of: password) {
+                            enableButtons()
+                        }
                 }
-                .padding(.trailing)
+                .textFieldStyle(.roundedBorder)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 5)
+                        .stroke(.gray.opacity(0.5), lineWidth: 2)
+                }
+                .padding(.horizontal)
+                
+                HStack {
+                    Button {
+                        register()
+                    } label: {
+                        Text("Sign Up")
+                    }
+                    .padding(.trailing)
 
-                Button {
-                    login()
-                } label: {
-                    Text("Log In")
+                    Button {
+                        login()
+                    } label: {
+                        Text("Log In")
+                    }
+                    .padding(.leading)
                 }
-                .padding(.leading)
+                .disabled(buttonsDisabled)
+                .buttonStyle(.borderedProminent)
+                .tint(.themepink)
+                .font(.title2)
+                .padding(.top)
             }
-            .disabled(buttonsDisabled)
-            .buttonStyle(.borderedProminent)
-            .font(.title2)
-            .padding(.top)
         }
         .alert(alertMessage, isPresented: $showingAlert) {
             Button("OK", role: .cancel) {}
