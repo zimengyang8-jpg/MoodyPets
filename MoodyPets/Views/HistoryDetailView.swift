@@ -25,23 +25,30 @@ struct HistoryDetailView: View {
                             case .empty:
                                 RoundedRectangle(cornerRadius: 20)
                                     .fill(Color.gray.opacity(0.15))
+                                    .frame(maxWidth: .infinity)
                                     .frame(height: 260)
                                     .overlay {
                                         ProgressView()
                                     }
 
                             case .success(let image):
-                                image
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(height: 260)
+                                ZStack {
+                                        RoundedRectangle(cornerRadius: 20)
+                                            .fill(Color.themeblue.opacity(0.15))
+
+                                        image
+                                            .resizable()
+                                            .scaledToFit()
+                                            .padding(4)
+                                    }
                                     .frame(maxWidth: .infinity)
-                                    .clipped()
-                                    .cornerRadius(20)
+                                    .frame(height: 260)
+                                    .clipShape(RoundedRectangle(cornerRadius: 20))
 
                             case .failure:
                                 RoundedRectangle(cornerRadius: 20)
                                     .fill(Color.gray.opacity(0.15))
+                                    .frame(maxWidth: .infinity)
                                     .frame(height: 260)
                                     .overlay {
                                         Text("Image Unavailable")
