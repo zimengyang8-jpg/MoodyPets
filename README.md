@@ -21,4 +21,5 @@ MoodyPets is an iOS app that uses AI to analyze a pet’s mood from photos and p
 Zimeng Yang
 
 [LinkedIn](https://www.linkedin.com/in/zimeng-2-yang/)
+
 [Github](https://github.com/zimengyang8-jpg)
