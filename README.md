@@ -15,8 +15,9 @@ MoodyPets is an iOS app that uses AI to analyze a pet’s mood from photos and p
 - OpenAI API (via Cloud Functions) – AI mood analysis
 - Firebase Cloud Functions – backend processing
 
-Demo Video
+[Demo Video](https://youtube.com/shorts/XfD7I8YsqWI?feature=share)
 
 ### 📬 Contact
 Zimeng Yang
+
 [LinkedIn](https://www.linkedin.com/in/zimeng-2-yang/)
